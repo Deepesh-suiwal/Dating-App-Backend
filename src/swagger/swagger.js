@@ -2,6 +2,8 @@ import swaggerUi from "swagger-ui-express";
 
 import { userAuthSwagger } from "./user-auth.swagger.js";
 import { userProfileSwagger } from "./user-profile.swagger.js";
+import { matchingSwagger } from "./matching.swagger.js";
+import { chatSwagger } from "./chat.swagger.js";
 import { env } from "../config/env.js";
 
 export const swaggerSpec = {
@@ -28,6 +30,14 @@ export const swaggerSpec = {
       name: "User Profile",
       description: "User profile APIs",
     },
+    {
+      name: "Matching",
+      description: "User matching APIs",
+    },
+    {
+      name: "Chat",
+      description: "1:1 chat APIs",
+    },
   ],
   components: {
     securitySchemes: {
@@ -51,6 +61,8 @@ export const swaggerSpec = {
   paths: {
     ...userAuthSwagger,
     ...userProfileSwagger,
+    ...matchingSwagger,
+    ...chatSwagger,
   },
 };
 

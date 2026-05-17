@@ -343,7 +343,7 @@ export const registerUserService = async ({ email, password, fullName }) => {
     status: 201,
     message:
       "User registered successfully. OTP sent to email for verification.",
-    // otp,
+    otp,
   };
 };
 
