@@ -39,6 +39,10 @@ const chatConversationSchema = new Schema(
       default: null,
       index: true,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

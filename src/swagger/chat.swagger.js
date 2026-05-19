@@ -53,7 +53,7 @@ export const chatSwagger = {
       },
     },
   },
-  "/api/users/chat/conversations/{conversationId}/messages": {
+  "/api/users/chat/conversations/messages/{conversationId}": {
     get: {
       tags: ["Chat"],
       summary: "Get messages for a 1:1 conversation",
@@ -144,37 +144,6 @@ export const chatSwagger = {
         },
         403: {
           description: "You can only message active matches",
-        },
-        404: {
-          description: "Conversation not found",
-        },
-      },
-    },
-  },
-  "/api/users/chat/conversations/{conversationId}/read": {
-    patch: {
-      tags: ["Chat"],
-      summary: "Mark all received messages in a conversation as read",
-      security: [{ userCookieAuth: [] }],
-      parameters: [
-        {
-          in: "path",
-          name: "conversationId",
-          required: true,
-          schema: {
-            type: "string",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Conversation marked as read",
-        },
-        400: {
-          description: "Invalid conversation id",
-        },
-        401: {
-          description: "Authentication required",
         },
         404: {
           description: "Conversation not found",

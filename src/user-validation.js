@@ -130,3 +130,6 @@ export const sendMessageSchema = z.object({
   text: z.string().trim().min(1, "Message is required").max(1000),
 });
 
+export const syncFcmTokenSchema = z.object({
+  fcmToken: z.string().trim().min(1, "FCM token is required"),
+});

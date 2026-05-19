@@ -15,6 +15,11 @@ const sessionSchema = new mongoose.Schema(
     device: String,
     userAgent: String,
 
+    fcmToken: {
+      type: String,
+      default: null,
+    },
+
     lastActivity: {
       type: Date,
       default: Date.now,

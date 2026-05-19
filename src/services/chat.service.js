@@ -4,6 +4,7 @@ import ChatMessage from "../models/chat-message.js";
 import UserMatch from "../models/user-match.js";
 import { getIO } from "../sockets/socket.js";
 import logger from "../utils/logger.js";
+import { sendPushNotification } from "./push-notification.service.js";
 
 const { ObjectId } = mongoose.Types;
 
@@ -11,17 +12,22 @@ const isValidObjectId = (id) => ObjectId.isValid(id);
 
 const isParticipant = (conversation, userId) =>
   conversation.participants.some(
-    (participant) => participant._id?.toString() === userId.toString() || participant.toString() === userId.toString(),
+    (participant) =>
+      participant._id?.toString() === userId.toString() ||
+      participant.toString() === userId.toString(),
   );
 
 const getReceiverId = (conversation, userId) =>
   conversation.participants.find(
-    (participant) => participant._id?.toString() !== userId.toString() && participant.toString() !== userId.toString(),
+    (participant) =>
+      participant._id?.toString() !== userId.toString() &&
+      participant.toString() !== userId.toString(),
   );
 
 export const getConversationsService = async (userId) => {
   const conversations = await ChatConversation.find({
     participants: userId,
+    isActive: true,
   })
     .populate("participants", "fullName email")
     .sort({ lastMessageAt: -1, updatedAt: -1 });
@@ -52,6 +58,13 @@ export const getMessagesService = async ({
     return {
       status: 404,
       message: "Conversation not found",
+    };
+  }
+
+  if (!conversation.isActive) {
+    return {
+      status: 403,
+      message: "Conversation is not active",
     };
   }
 
@@ -92,7 +105,9 @@ export const sendMessageService = async ({ userId, conversationId, text }) => {
   }
 
   if (conversation.matchId) {
-    const match = await UserMatch.findById(conversation.matchId).select("status");
+    const match = await UserMatch.findById(conversation.matchId).select(
+      "status",
+    );
 
     if (!match || match.status !== "MATCHED") {
       return {
@@ -110,6 +125,8 @@ export const sendMessageService = async ({ userId, conversationId, text }) => {
       message: "Receiver not found",
     };
   }
+  // Get sender info for push title
+  const sender = await User.findById(userId).select("name");
 
   const message = await ChatMessage.create({
     conversationId,
@@ -133,6 +150,19 @@ export const sendMessageService = async ({ userId, conversationId, text }) => {
       conversationId,
       message,
     });
+    // PUSH NOTIFICATION TO RECEIVER
+    await sendPushNotification({
+      userId: receiverId,
+      title: `${sender?.name || "Someone"} sent a message 💬`,
+      body: text,
+      data: {
+        type: "CHAT_MESSAGE",
+        conversationId: conversationId.toString(),
+        senderId: userId.toString(),
+        receiverId: receiverId.toString(),
+        messageId: message._id.toString(),
+      },
+    });
   } catch (error) {
     logger.error(error, "Socket emit failed");
   }
@@ -141,45 +171,5 @@ export const sendMessageService = async ({ userId, conversationId, text }) => {
     status: 201,
     message: "Message sent successfully",
     data: message,
-  };
-};
-
-export const markConversationReadService = async ({
-  userId,
-  conversationId,
-}) => {
-  if (!isValidObjectId(conversationId)) {
-    return {
-      status: 400,
-      message: "Invalid conversation id",
-    };
-  }
-
-  const conversation = await ChatConversation.findById(conversationId);
-
-  if (!conversation || !isParticipant(conversation, userId)) {
-    return {
-      status: 404,
-      message: "Conversation not found",
-    };
-  }
-
-  const result = await ChatMessage.updateMany(
-    {
-      conversationId,
-      receiverId: userId,
-      readAt: null,
-    },
-    {
-      readAt: new Date(),
-    },
-  );
-
-  return {
-    status: 200,
-    message: "Conversation marked as read",
-    data: {
-      modifiedCount: result.modifiedCount,
-    },
   };
 };

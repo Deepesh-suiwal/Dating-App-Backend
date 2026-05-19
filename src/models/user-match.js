@@ -28,7 +28,7 @@ const userMatchSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["PENDING", "MATCHED"],
+      enum: ["PENDING", "MATCHED", "UNMATCHED"],
       default: "PENDING",
     },
 
@@ -36,7 +36,18 @@ const userMatchSchema = new Schema(
       type: Date,
       default: null,
     },
+    unmatchedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    unmatchedAt: {
+      type: Date,
+      default: null,
+    },
   },
+
   {
     timestamps: true,
   },

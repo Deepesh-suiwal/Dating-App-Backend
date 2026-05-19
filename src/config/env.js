@@ -30,6 +30,12 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+
+  FIREBASE_PROJECT_ID: z.string(),
+  FIREBASE_PRIVATE_KEY_ID: z.string(),
+  FIREBASE_PRIVATE_KEY: z.string(),
+  FIREBASE_CLIENT_EMAIL: z.string(),
+  FIREBASE_CLIENT_ID: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

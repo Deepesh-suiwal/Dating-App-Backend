@@ -32,6 +32,11 @@ const chatMessageSchema = new Schema(
       type: Date,
       default: null,
     },
+    status: {
+      type: String,
+      enum: ["SENT", "DELIVERED", "READ"],
+      default: "SENT",
+    },
   },
   {
     timestamps: true,

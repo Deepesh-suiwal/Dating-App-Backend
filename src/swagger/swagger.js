@@ -4,6 +4,7 @@ import { userAuthSwagger } from "./user-auth.swagger.js";
 import { userProfileSwagger } from "./user-profile.swagger.js";
 import { matchingSwagger } from "./matching.swagger.js";
 import { chatSwagger } from "./chat.swagger.js";
+import { notificationSwagger } from "./notification.swagger.js";
 import { env } from "../config/env.js";
 
 export const swaggerSpec = {
@@ -60,6 +61,7 @@ export const swaggerSpec = {
   },
   paths: {
     ...userAuthSwagger,
+    ...notificationSwagger,
     ...userProfileSwagger,
     ...matchingSwagger,
     ...chatSwagger,

@@ -5,11 +5,15 @@ import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 
+//config
+import "./config/firebase.js";
+
 //user routes
 import userRoutes from "./routes/user-auth-routes.js";
 import userProfileRoutes from "./routes/user-profile-routes.js";
 import matchingRoutes from "./routes/matching-routes.js";
 import chatRoutes from "./routes/chat-routes.js";
+import notificationRoutes from "./routes/notification.route.js";
 
 //middlewares
 import { errorHandler } from "./middlewares/error.middleware.js";
@@ -50,9 +54,9 @@ app.use("/api/users/profile", userProfileRoutes);
 
 app.use("/api/users/matches", matchingRoutes);
 
+app.use("/api/users/notifications", notificationRoutes);
 
 app.use("/api/users/chat", chatRoutes);
-
 
 // =======================
 // HEALTH CHECK

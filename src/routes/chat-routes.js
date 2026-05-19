@@ -5,7 +5,6 @@ import { sendMessageSchema } from "../user-validation.js";
 import {
   getConversations,
   getMessages,
-  markConversationRead,
   sendMessage,
 } from "../controllers/chat-controller.js";
 
@@ -14,12 +13,11 @@ const router = express.Router();
 router.use(verifyUserAccessToken);
 
 router.get("/conversations", getConversations);
-router.get("/conversations/:conversationId/messages", getMessages);
+router.get("/conversations/messages/:conversationId", getMessages);
 router.post(
-  "/conversations/:conversationId/messages",
+  "/conversations/messages/:conversationId",
   validate(sendMessageSchema),
   sendMessage,
 );
-router.patch("/conversations/:conversationId/read", markConversationRead);
 
 export default router;

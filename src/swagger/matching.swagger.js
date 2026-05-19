@@ -182,4 +182,52 @@ export const matchingSwagger = {
       },
     },
   },
+  "/api/users/matches/unmatch/{targetUserId}": {
+    post: {
+      tags: ["Matching"],
+      summary: "Unmatch a matched user",
+      security: [{ userCookieAuth: [] }],
+      parameters: [
+        {
+          in: "path",
+          name: "targetUserId",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "User unmatched successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Unmatched successfully",
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        400: {
+          description:
+            "Invalid user id, invalid operation, already unmatched, or users are not matched",
+        },
+
+        401: {
+          description: "Authentication required",
+        },
+
+        404: {
+          description: "Match not found",
+        },
+      },
+    },
+  },
 };

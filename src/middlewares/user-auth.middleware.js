@@ -36,6 +36,8 @@ export const verifyUserAccessToken = async (req, res, next) => {
       return res.status(401).json({ message: "Session not found or expired" });
     }
     req.user = decoded;
+    req.session = userSessions; 
+    
 
     next();
   } catch (error) {
